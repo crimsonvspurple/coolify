@@ -93,6 +93,11 @@
                 </div>
             @endforeach
         </div>
+        @if (! $slot->isEmpty())
+            <div class="mt-4">
+                {{ $slot }}
+            </div>
+        @endif
     </x-application.settings-section>
 
     @if ($threaded)

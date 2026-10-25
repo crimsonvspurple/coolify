@@ -91,6 +91,7 @@ class NotificationsController extends Controller
                     'slack_webhook_url' => ['sometimes', 'nullable', 'string', new SafeWebhookUrl],
                     'deployment_success_slack_notifications' => 'sometimes|boolean',
                     'deployment_failure_slack_notifications' => 'sometimes|boolean',
+                    'deployment_commit_details_slack_notifications' => 'sometimes|boolean',
                     'status_change_slack_notifications' => 'sometimes|boolean',
                     'restart_limit_reached_slack_notifications' => 'sometimes|boolean',
                     'backup_success_slack_notifications' => 'sometimes|boolean',

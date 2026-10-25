@@ -217,6 +217,31 @@ describe('PATCH /api/v1/notifications/*', function () {
             ->assertJsonValidationErrors('deployment_commit_details_email_notifications');
     });
 
+    test('updates the deployment commit details slack setting', function () {
+        $this->withHeaders(authHeaders($this->bearerToken))
+            ->getJson('/api/v1/notifications/slack')
+            ->assertSuccessful()
+            ->assertJsonPath('deployment_commit_details_slack_notifications', false);
+
+        $this->withHeaders(authHeaders($this->bearerToken))
+            ->patchJson('/api/v1/notifications/slack', [
+                'deployment_commit_details_slack_notifications' => true,
+            ])
+            ->assertSuccessful()
+            ->assertJsonPath('deployment_commit_details_slack_notifications', true);
+
+        expect(SlackNotificationSettings::query()->where('team_id', $this->team->id)->value('deployment_commit_details_slack_notifications'))->toBeTruthy();
+    });
+
+    test('validates the deployment commit details slack setting', function () {
+        $this->withHeaders(authHeaders($this->bearerToken))
+            ->patchJson('/api/v1/notifications/slack', [
+                'deployment_commit_details_slack_notifications' => 'not-a-boolean',
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('deployment_commit_details_slack_notifications');
+    });
+
     test('validates the smtp ehlo domain', function () {
         $this->withHeaders(authHeaders($this->bearerToken))
             ->patchJson('/api/v1/notifications/email', [

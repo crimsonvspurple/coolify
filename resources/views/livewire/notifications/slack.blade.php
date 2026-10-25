@@ -28,7 +28,12 @@
             </x-application.settings-section>
         </form>
 
-        <x-notification.event-grid :settings="$settings" channel="slack" />
+        <x-notification.event-grid :settings="$settings" channel="slack">
+            <x-forms.checkbox canGate="update" :canResource="$settings" instantSave="instantSaveDeploymentCommitDetails"
+                id="deploymentCommitDetailsSlackNotifications"
+                label="Include commit details in deployment Slack notifications"
+                helper="Adds the commit SHA, branch, and commit message to deployment success and failure Slack notifications." />
+        </x-notification.event-grid>
     </div>
     </x-notification.settings-layout>
 </div>

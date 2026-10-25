@@ -37,6 +37,9 @@ class Slack extends Component
     public bool $deploymentFailureSlackNotifications = true;
 
     #[Validate(['boolean'])]
+    public bool $deploymentCommitDetailsSlackNotifications = false;
+
+    #[Validate(['boolean'])]
     public bool $statusChangeSlackNotifications = false;
 
     #[Validate(['boolean'])]
@@ -96,6 +99,7 @@ class Slack extends Component
 
             $this->settings->deployment_success_slack_notifications = $this->deploymentSuccessSlackNotifications;
             $this->settings->deployment_failure_slack_notifications = $this->deploymentFailureSlackNotifications;
+            $this->settings->deployment_commit_details_slack_notifications = $this->deploymentCommitDetailsSlackNotifications;
             $this->settings->status_change_slack_notifications = $this->statusChangeSlackNotifications;
             $this->settings->restart_limit_reached_slack_notifications = $this->restartLimitReachedSlackNotifications;
             $this->settings->backup_success_slack_notifications = $this->backupSuccessSlackNotifications;
@@ -122,6 +126,7 @@ class Slack extends Component
 
             $this->deploymentSuccessSlackNotifications = $this->settings->deployment_success_slack_notifications;
             $this->deploymentFailureSlackNotifications = $this->settings->deployment_failure_slack_notifications;
+            $this->deploymentCommitDetailsSlackNotifications = $this->settings->deployment_commit_details_slack_notifications;
             $this->statusChangeSlackNotifications = $this->settings->status_change_slack_notifications;
             $this->restartLimitReachedSlackNotifications = $this->settings->restart_limit_reached_slack_notifications;
             $this->backupSuccessSlackNotifications = $this->settings->backup_success_slack_notifications;
@@ -213,6 +218,18 @@ class Slack extends Component
         $this->syncData(true);
         refreshSession();
         $this->dispatch('success', 'Settings saved.');
+    }
+
+    public function instantSaveDeploymentCommitDetails()
+    {
+        try {
+            $this->resetErrorBag();
+            $this->saveModel();
+        } catch (\Throwable $e) {
+            $this->deploymentCommitDetailsSlackNotifications = $this->settings->deployment_commit_details_slack_notifications;
+
+            return handleError($e, $this);
+        }
     }
 
     public function sendTestNotification()

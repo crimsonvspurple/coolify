@@ -203,7 +203,11 @@ class DeploymentSuccess extends CustomEmailNotification
 
         $description .= "\n\n*Project:* ".data_get($this->application, 'environment.project.name');
         $description .= "\n*Environment:* {$this->environment_name}";
-        $description .= "\n*<{$this->deployment_url}|Deployment Logs>*";
+        $description = $this->appendSlackCommitDetails(
+            $description,
+            data_get($this->application, 'environment.project.team'),
+            "\n*<{$this->deployment_url}|Deployment Logs>*",
+        );
 
         return new SlackMessage(
             title: $title,
